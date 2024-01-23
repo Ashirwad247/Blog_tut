@@ -1,0 +1,4 @@
+always always await for finding and use async await 
+also use return next() for not setting content headers immediately
+always require cookie-parser, urlencoded, express.json(to parse json data)
+app.use(express.static(path.resolve('./public'))); to get the public files , Ofcourse idiot , who forgot about it .
