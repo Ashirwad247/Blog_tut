@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <%- include('./partials/head') %>
-    <title>Sign Up</title>
-</head>
-<body>
-    <%-include('./partials/nav')  %>
 
-    <div class="container mt-4">
-        <form action="/user/signup" method="post">
-            <div class="mb-3">
-              <label for="fullName" class="form-label">full Name</label>
-              <input type="text" class="form-control"  name="fullName"  id="fullName" aria-describedby="fullName">
+<head>
+    <%- include('./partials/head.ejs') %>
+        <title>Signup Page</title>
+
+</head>
+
+<body>
+    <div class="container" class="">
+        <form action="/signup" method="post">
+            <div class="mb-3 mt-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control"  name="name" id="name" >
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email"">
             </div>
             <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Email address</label>
-              <input type="email"  name="email"  class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-              <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password">
             </div>
-            <div class="mb-3">
-              <label for="exampleInputPassword1" class="form-label">Password</label>
-              <input type="password"  name="password" class="form-control" id="exampleInputPassword1">
-            </div>
-          
+           
             <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+        </form>
     </div>
-   
-    
-    <%-include('./partials/scripts')  %>
+  
+
+
+    <%- include('./partials/script.ejs') %>
 </body>
+
 </html>

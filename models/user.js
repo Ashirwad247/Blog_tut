@@ -1,78 +1,46 @@
-const {Schema, model} = require('mongoose')
-const {createHmac, randomBytes} = require("crypto");
-const { createTokenForUser } = require('../services/authentication');
+const { Schema, model } = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const userSchema = new Schema({
-    fullName:{
-        type:String,
-        required:true,
-        unique:true,
+    name: {
+        type: String,
+        required: true,
+        unique: true,
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
-    },
-    salt:{
-        type:String,
+    email: {
+        type: String,
+        required: true,
 
     },
-    password:{
-        type:String,
-        required:true,
+    password: {
+        type: String,
+        required: true,
 
     },
-    profileImageURL:{
-        type:String,
-        default:'/images/default.png'
+    profileImageURL: {
+        type: String,
+        default: '/images/default.png'
     },
-    role:{
-        type:String,
-        enum:["USER", "ADMIN"],
-        default:"USER",
+    role: {
+        type: String,
+        enum: ["USER", "ADMIN"],
+        default: "USER",
     }
-
-},
- {timestamps:true});
-
-  
-userSchema.pre('save',function (next){
-    const user = this;//current user
-    if(!user.isModified('password')) return;
-    const salt = randomBytes(16).toString();
-    //createHmac('algorithm')
-    const hashedPassword = createHmac('sha256', salt)
-    .update(user.password)
-    .digest("hex");
-
-    this.salt = salt;
-    this.password = hashedPassword;
-
-    next();
-
 })
 
-userSchema.static('matchPasswordAGT',async function(email, password){
-   const user = await this.findOne({email});
-   if(!user) throw new Error('User not found');
-//    console.log(user);
-   const salt = user.salt;
-   const hashedPassword = user.password;
-   
-   const userProvidedHash = createHmac('sha256', salt)
-   .update(password)
-   .digest('hex');
-
-
-    if( hashedPassword !== userProvidedHash) throw new Error('Incorrect Password');
-    // return {...user, password:undefined, salt:undefined}
-    // return user
-    const token = createTokenForUser(user);
-    return token
-})
-
+userSchema.pre('save', async function (next) {
+    try {
+        const user = this;
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        user.password = hashedPassword;
+        next();
+    } catch (err) {
+        console.log('Error in hashing password', err);
+        next(err); // Pass the error to the next middleware
+    }
+});
 
 
 const User = model('user', userSchema)
 
-module.exports = User;
+module.exports = User
